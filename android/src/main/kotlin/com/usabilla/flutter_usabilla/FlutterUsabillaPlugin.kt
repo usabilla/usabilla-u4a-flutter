@@ -110,7 +110,6 @@ public class FlutterUsabillaPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
     override fun onReceive(context: Context, intent: Intent) {
       if (intent != null) {
         val res: Map<String, Any> = getResult(intent, FeedbackResult.INTENT_FEEDBACK_RESULT)
-        val response: List<Map<String, Any>> = listOf(res)
         val activity: Activity? = activity
         if (activity is FragmentActivity) {
           val supportFragmentManager: androidx.fragment.app.FragmentManager = (activity as FragmentActivity).getSupportFragmentManager()
@@ -119,7 +118,7 @@ public class FlutterUsabillaPlugin: FlutterPlugin, MethodCallHandler, ActivityAw
             supportFragmentManager.beginTransaction().remove(fragment).commit()
           }
           if (ubFormResult != null) {
-            ubFormResult?.success(response)
+            ubFormResult?.success(res)
           }
           ubFormResult = null
         }

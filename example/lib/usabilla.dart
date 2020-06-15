@@ -87,7 +87,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   Future<void> showForm() async {
     print('show Form clicked');
-    List ubResult;
+    Map ubResult;
     try {
       ubResult = await FlutterUsabilla.loadFeedbackForm(_formId);
     } on PlatformException {
@@ -98,7 +98,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   Future<void> showFormWithScreenshot() async {
     print('show Form clicked');
-    List ubResult;
+    Map ubResult;
     try {
       ubResult =
           await FlutterUsabilla.loadFeedbackFormWithCurrentViewScreenshot(

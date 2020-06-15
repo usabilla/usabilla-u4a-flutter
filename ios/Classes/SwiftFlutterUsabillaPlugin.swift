@@ -141,19 +141,21 @@ extension SwiftFlutterUsabillaPlugin: UsabillaDelegate {
     }
 
     public func formDidClose(formID: String, withFeedbackResults results: [FeedbackResult], isRedirectToAppStoreEnabled: Bool) {
-        var rnResults: [[String : Any]] = []
+        var ubResults: [[String : Any]] = []
         for result in results {
             let dictionary: Dictionary = ["rating": result.rating ?? 0, "abandonedPageIndex": result.abandonedPageIndex ?? 0, "sent": result.sent] as [String : Any]
-            rnResults.append(dictionary)
+            ubResults.append(dictionary)
         }
         formNavigationController = nil
-        ubFormResult!(rnResults)
+        let ubResult: [String : Any] = ["formId": formID, "results": ubResults, "isRedirectToAppStoreEnabled": isRedirectToAppStoreEnabled]
+        ubFormResult!(ubResult)
     }
 
     public func campaignDidClose(withFeedbackResult result: FeedbackResult, isRedirectToAppStoreEnabled: Bool) {
-        let rnResult: [String : Any] = ["rating": result.rating ?? 0, "abandonedPageIndex": result.abandonedPageIndex ?? 0, "sent": result.sent] as [String : Any]
+        let response: [String : Any] = ["rating": result.rating ?? 0, "abandonedPageIndex": result.abandonedPageIndex ?? 0, "sent": result.sent] as [String : Any]
         formNavigationController = nil
-        ubCampaignResult!(rnResult)
+        let ubResult: [String : Any] = ["result": response, "isRedirectToAppStoreEnabled": isRedirectToAppStoreEnabled]
+        ubCampaignResult!(ubResult)
     }
 }
 

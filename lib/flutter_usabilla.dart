@@ -52,17 +52,17 @@ class FlutterUsabilla {
     });
   }
 
-  static Future<List> loadFeedbackForm(String formId) async {
-    final List ubFormResult =
+  static Future<Map> loadFeedbackForm(String formId) async {
+    final Map ubFormResult =
         await _channel.invokeMethod('loadFeedbackForm', <String, dynamic>{
       'formId': formId,
     });
     return ubFormResult;
   }
 
-  static Future<List> loadFeedbackFormWithCurrentViewScreenshot(
+  static Future<Map> loadFeedbackFormWithCurrentViewScreenshot(
       String formId) async {
-    final List ubFormResultWithImage = await _channel.invokeMethod(
+    final Map ubFormResultWithImage = await _channel.invokeMethod(
         'loadFeedbackFormWithCurrentViewScreenshot', <String, dynamic>{
       'formId': formId,
     });
