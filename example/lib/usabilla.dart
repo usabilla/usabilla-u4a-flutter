@@ -35,12 +35,12 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   String os = Platform.operatingSystem;
   String _platformVersion = 'Unknown';
-  String _appId = '7fb7ffdd-c2fa-49b9-bee5-218c12466df7';
-  String _formId = '5c41a3b7c286b957534bd399';
-  String _event = 'LANG';
-  String _defaultMaskCharacter = 'A';
+  String _appId = 'YOUR_APP_ID_HERE';
+  String _formId = 'YOUR_FORM_ID_HERE';
+  String _event = 'YOUR_EVENT_TAG_HERE';
+  String _defaultMaskCharacter = 'YOUR_DEFAULT_MASK_CHARACTER_HERE';
   List _defaultDataMask = [];
-  Map customVariable = {'test': 1};
+  Map customVariable = {'YOUR_KEY_HERE': 'YOUR_VALUE_HERE'};
 
   @override
   void initState() {
