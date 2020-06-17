@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 import 'package:flutter/services.dart';
 
 class FlutterUsabilla {
@@ -70,8 +71,28 @@ class FlutterUsabilla {
   }
 
   static Future<void> localizedStringFile(String localizedStringFile) async {
-    await _channel.invokeMethod('loadLocalizedStringFile', <String, dynamic>{
-      'localizedStringFile': localizedStringFile,
+    if (Platform.isIOS) {
+      await _channel.invokeMethod('loadLocalizedStringFile', <String, dynamic>{
+        'localizedStringFile': localizedStringFile,
+      });
+    } else {
+      print('localizedStringFile method only available for IOS');
+    }
+  }
+
+  static Future<bool> preloadFeedbackForms(List formIDs) async {
+    final bool _preload =
+        await _channel.invokeMethod('preloadFeedbackForms', <String, dynamic>{
+      'formIDs': formIDs,
     });
+    return _preload;
+  }
+
+  static Future<bool> setDebugEnabled(bool debugEnabled) async {
+    final bool _debugEnabled =
+        await _channel.invokeMethod('setDebugEnabled', <String, dynamic>{
+      'debugEnabled': debugEnabled,
+    });
+    return _debugEnabled;
   }
 }

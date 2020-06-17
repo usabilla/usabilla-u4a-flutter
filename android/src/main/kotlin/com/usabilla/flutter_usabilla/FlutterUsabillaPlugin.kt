@@ -140,8 +140,11 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             "resetCampaignData" -> resetCampaignData(result)
             "dismiss" -> dismiss(result)
             "setCustomVariables" -> setCustomVariables(call, result)
-            "setDataMasking" -> setDataMasking(call, result)
             "getDefaultDataMasks" -> getDefaultDataMasks(result)
+            "setDataMasking" -> setDataMasking(call, result)
+            "preloadFeedbackForms" -> preloadFeedbackForms(call, result)
+            "removeCachedForms" -> removeCachedForms(result)
+            "setDebugEnabled" -> setDebugEnabled(call, result)
             "getPlatformVersion" -> result.success(android.os.Build.VERSION.RELEASE)
             else -> result.notImplemented()
         }
@@ -244,5 +247,24 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         val character = args["character"] as String
         usabilla.setDataMasking(masks, character[0])
         result.success(null)
+    }
+
+    private fun preloadFeedbackForms(call: MethodCall, result: Result) {
+        val args = call.arguments as? HashMap<*, *> ?: HashMap<String, Any>()
+        val formIDs = args["formIDs"] as ArrayList<String>
+        usabilla.preloadFeedbackForms(formIDs)
+        result.success(true)
+    }
+
+    private fun removeCachedForms(result: Result) {
+        Usabilla.removeCachedForms()
+        result.success(null)
+    }
+
+    private fun setDebugEnabled(call: MethodCall, result: Result) {
+        val args = call.arguments as? HashMap<*, *> ?: HashMap<String, Any>()
+        val debugEnabled = args["debugEnabled"] as Boolean
+        usabilla.debugEnabled = debugEnabled
+        result.success(true)
     }
 }

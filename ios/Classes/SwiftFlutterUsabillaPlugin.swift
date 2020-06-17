@@ -22,95 +22,66 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
         case "initialize":
-            _init(appId: (call.arguments as! Dictionary<String, AnyObject>)["appId"] as! String)
-            result(nil)
+            initialize(call: call, result: result)
+            break
+        case "loadFeedbackForm":
+            loadFeedbackForm(call: call, result: result)
+            break
+        case "loadFeedbackFormWithCurrentViewScreenshot":
+            loadFeedbackFormWithCurrentViewScreenshot(call: call, result: result)
+            break
+        case "sendEvent":
+            sendEvent(call: call, result: result)
+            break
+        case "resetCampaignData":
+            resetCampaignData(result: result)
+            break
+        case "dismiss":
+            dismiss(result: result)
+            break
+        case "setCustomVariables":
+            setCustomVariables(call: call, result: result)
+            break
+        case "getDefaultDataMasks":
+            getDefaultDataMasks(result: result)
+            break
+        case "setDataMasking":
+            setDataMasking(call: call, result: result)
+            break
+        case "preloadFeedbackForms":
+            preloadFeedbackForms(call: call, result: result)
+            break
+        case "removeCachedForms":
+            removeCachedForms(result: result)
+            break
+        case "setDebugEnabled":
+            setDebugEnabled(call: call, result: result)
+            break
+        case "loadLocalizedStringFile":
+            loadLocalizedStringFile(call: call, result: result)
             break
         case "getPlatformVersion":
             result(UIDevice.current.systemVersion)
-            break
-        case "loadFeedbackForm":
-            _loadFeedbackForm(result: result, formId: (call.arguments as! Dictionary<String, AnyObject>)["formId"] as! String)
-            break
-        case "loadFeedbackFormWithCurrentViewScreenshot":
-            _loadFeedbackFormWithCurrentViewScreenshot(result: result, formId: (call.arguments as! Dictionary<String, AnyObject>)["formId"] as! String)
-            break
-        case "sendEvent":
-            _sendEvent(result: result, event: (call.arguments as! Dictionary<String, AnyObject>)["event"] as! String)
-            break
-        case "resetCampaignData":
-            _resetCampaignData()
-            result(nil)
-            break
-        case "setCustomVariables":
-            _setCustomVariables(variables: (call.arguments as! Dictionary<String, AnyObject>)["customVariables"] as! [String: Any])
-            result(nil)
-            break
-        case "dismiss":
-            _dismiss()
-            result(nil)
-            break
-        case "getDefaultDataMasks":
-            result(Usabilla.defaultDataMasks)
-            break
-        case "setDataMasking":
-            _setDataMasking(masks: (call.arguments as! Dictionary<String, AnyObject>)["masks"] as! [String], maskChar: (call.arguments as! Dictionary<String, AnyObject>)["character"] as! String)
-            result(nil)
-            break
-        case "localizedStringFile":
-            _loadLocalizedStringFile(localizedStringFile: (call.arguments as! Dictionary<String, AnyObject>)["localizedStringFile"] as! String)
-            result(nil)
             break
         default:
             result(FlutterMethodNotImplemented)
         }
     }
 
-    private func _init(appId: String) {
-        print("initialize inside called")
+    private func initialize(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let appId = (call.arguments as! Dictionary<String, AnyObject>)["appId"] as! String
         Usabilla.initialize(appID: appId)
+        result(nil)
     }
 
-    private func _sendEvent(result: @escaping FlutterResult, event: String) {
-        Usabilla.sendEvent(event: event)
-        ubCampaignResult = result
-    }
-
-    private func _resetCampaignData() {
-        Usabilla.resetCampaignData {}
-    }
-
-    private func _dismiss() {
-        let _ = Usabilla.dismiss()
-    }
-
-    private func _setDataMasking(masks: [String], maskChar: String) {
-        guard let maskCharacter = maskChar.first
-            else {
-                Usabilla.setDataMasking(masks: Usabilla.defaultDataMasks, maskCharacter: "X")
-                return
-        }
-        Usabilla.setDataMasking(masks: masks, maskCharacter: maskCharacter)
-    }
-
-    private func _setCustomVariables(variables: [String: Any]) {
-        let newCustomVariables = variables.mapValues { String(describing: $0) }
-        Usabilla.customVariables = newCustomVariables
-    }
-
-    private func _removeCachedForms() {
-        Usabilla.removeCachedForms()
-    }
-
-    private func _loadLocalizedStringFile(localizedStringFile: String) {
-        Usabilla.localizedStringFile = localizedStringFile
-    }
-
-    private func _loadFeedbackForm(result: @escaping FlutterResult, formId: String) {
+    private func loadFeedbackForm(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let formId = (call.arguments as! Dictionary<String, AnyObject>)["formId"] as! String
         Usabilla.loadFeedbackForm(formId)
         ubFormResult = result
     }
 
-    private func _loadFeedbackFormWithCurrentViewScreenshot(result: @escaping FlutterResult, formId: String) {
+    private func loadFeedbackFormWithCurrentViewScreenshot(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let formId = (call.arguments as! Dictionary<String, AnyObject>)["formId"] as! String
         if let rootVC = UIApplication.shared.keyWindow?.rootViewController {
             let screenshot = self.takeScreenshot(view: rootVC.view)
             Usabilla.loadFeedbackForm(formId, screenshot: screenshot)
@@ -120,6 +91,67 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
 
     private func takeScreenshot(view: UIView) -> UIImage {
         return Usabilla.takeScreenshot(view)!
+    }
+
+    private func sendEvent(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let event = (call.arguments as! Dictionary<String, AnyObject>)["event"] as! String
+        Usabilla.sendEvent(event: event)
+        ubCampaignResult = result
+    }
+
+    private func resetCampaignData(result: @escaping FlutterResult) {
+        Usabilla.resetCampaignData {}
+        result(nil)
+    }
+
+    private func dismiss(result: @escaping FlutterResult) {
+        let _ = Usabilla.dismiss()
+        result(nil)
+    }
+
+    private func setCustomVariables(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let variables = (call.arguments as! Dictionary<String, AnyObject>)["customVariables"] as! [String: Any]
+        let newCustomVariables = variables.mapValues { String(describing: $0) }
+        Usabilla.customVariables = newCustomVariables
+    }
+
+    private func getDefaultDataMasks(result: @escaping FlutterResult) {
+        result(Usabilla.defaultDataMasks)
+    }
+
+    private func setDataMasking(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let masks = (call.arguments as! Dictionary<String, AnyObject>)["masks"] as! [String]
+        let maskChar = (call.arguments as! Dictionary<String, AnyObject>)["character"] as! String
+        guard let maskCharacter = maskChar.first
+            else {
+                Usabilla.setDataMasking(masks: Usabilla.defaultDataMasks, maskCharacter: "X")
+                return
+        }
+        Usabilla.setDataMasking(masks: masks, maskCharacter: maskCharacter)
+        result(nil)
+    }
+
+    private func preloadFeedbackForms(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let formIDs = (call.arguments as! Dictionary<String, AnyObject>)["formIDs"] as! [String]
+        Usabilla.preloadFeedbackForms(withFormIDs: formIDs)
+        result(true)
+    }
+
+    private func removeCachedForms(result: @escaping FlutterResult) {
+        Usabilla.removeCachedForms()
+        result(nil)
+    }
+
+    private func setDebugEnabled(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let debugEnabled = (call.arguments as! Dictionary<String, AnyObject>)["debugEnabled"] as! Bool
+        Usabilla.debugEnabled = debugEnabled
+        result(true)
+    }
+
+    private func loadLocalizedStringFile(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let localizedStringFile = (call.arguments as! Dictionary<String, AnyObject>)["localizedStringFile"] as! String
+        Usabilla.localizedStringFile = localizedStringFile
+        result(nil)
     }
 }
 
