@@ -13,17 +13,18 @@ import com.usabilla.sdk.ubform.sdk.form.FormClient
 
 class UsabillaFormCallbackImpl : UsabillaFormCallback {
     private var form: DialogFragment? = null
+
     override fun formLoadSuccess(formClient: FormClient?) {
         formClient?.let {
             form = formClient.fragment
-            val supportFragmentManager: FragmentManager = (activity as FragmentActivity).getSupportFragmentManager()
+            val supportFragmentManager: FragmentManager = (activity as FragmentActivity).supportFragmentManager
             supportFragmentManager.beginTransaction().replace(R.id.content, form!!, FRAGMENT_TAG).commit()
             form = null
         }
     }
 
     override fun mainButtonTextUpdated(s: String?) {
-        val mainButtonTextArg: String = "mainButtonText";
+        val mainButtonTextArg: String = "mainButtonText"
         var result: Map<String, Any> = mapOf<String, Any>(mainButtonTextArg to s!!)
         //FIXME Need to fix mainButtonTextUpdated
         // - when it will be implemented.
@@ -32,7 +33,7 @@ class UsabillaFormCallbackImpl : UsabillaFormCallback {
 
     override fun formLoadFail() {
         var res: Map<String, Any> = mapOf<String, Any>(KEY_ERROR_MSG to "The form could not be loaded")
-        val response: List<Map<String, Any>> = listOf(res)
-        ubFormResult?.success(response)
+        ubFormResult?.success(res)
+        ubFormResult = null
     }
 }

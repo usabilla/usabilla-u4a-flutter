@@ -1,8 +1,5 @@
 package com.usabilla.flutter_usabilla
 
-import androidx.annotation.NonNull;
-
-
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -11,10 +8,10 @@ import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.util.Log
 import android.view.View
-import androidx.fragment.app.FragmentManager
+import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-
 import com.usabilla.sdk.ubform.UbConstants
 import com.usabilla.sdk.ubform.UbConstants.INTENT_CLOSE_CAMPAIGN
 import com.usabilla.sdk.ubform.UbConstants.INTENT_CLOSE_FORM
@@ -34,30 +31,15 @@ import java.util.*
 import kotlin.collections.HashMap
 
 /** FlutterUsabillaPlugin */
-class FlutterUsabillaPlugin() : FlutterPlugin, MethodCallHandler, ActivityAware {
-    /// The MethodChannel that will the communication between Flutter and native Android
-    ///
-    /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-    /// when the Flutter Engine is detached from the Activity
+class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private lateinit var channel: MethodChannel
     private val usabilla: Usabilla = Usabilla
     private val usabillaFormCallbackImpl = UsabillaFormCallbackImpl()
 
-
-    // This static function is optional and equivalent to onAttachedToEngine. It supports the old
-    // pre-Flutter-1.12 Android projects. You are encouraged to continue supporting
-    // plugin registration via this function while apps migrate to use the new Android APIs
-    // post-flutter-1.12 via https://flutter.dev/go/android-project-migration.
-    //
-    // It is encouraged to share logic between onAttachedToEngine and registerWith to keep
-    // them functionally equivalent. Only one of onAttachedToEngine or registerWith will be called
-    // depending on the user's project. onAttachedToEngine or registerWith must both be defined
-    // in the same class.
-
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        renderer = flutterPluginBinding.getFlutterEngine().renderer
-        channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), methodChannelName)
-        channel.setMethodCallHandler(FlutterUsabillaPlugin());
+        renderer = flutterPluginBinding.flutterEngine.renderer
+        channel = MethodChannel(flutterPluginBinding.flutterEngine.dartExecutor, methodChannelName)
+        channel.setMethodCallHandler(FlutterUsabillaPlugin())
 
         val closeManager: LocalBroadcastManager = LocalBroadcastManager.getInstance(flutterPluginBinding.applicationContext)
         closeManager.registerReceiver(closingFormReceiver, IntentFilter(INTENT_CLOSE_FORM))
@@ -93,7 +75,6 @@ class FlutterUsabillaPlugin() : FlutterPlugin, MethodCallHandler, ActivityAware 
         }
     }
 
-
     private fun getResult(intent: Intent, feedbackResultType: String): Map<String, Any> {
         val res: FeedbackResult = intent.getParcelableExtra(feedbackResultType)
         return mapOf<String, Any>(
@@ -105,11 +86,11 @@ class FlutterUsabillaPlugin() : FlutterPlugin, MethodCallHandler, ActivityAware 
 
     private val closingFormReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            intent?.let {
+            intent.let {
                 val res: Map<String, Any> = getResult(intent, FeedbackResult.INTENT_FEEDBACK_RESULT)
                 val activity: Activity? = activity
                 if (activity is FragmentActivity) {
-                    val supportFragmentManager: FragmentManager = (activity as FragmentActivity).getSupportFragmentManager()
+                    val supportFragmentManager: FragmentManager = activity.supportFragmentManager
                     supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)?.let { fragment ->
                         supportFragmentManager.beginTransaction().remove(fragment).commit()
                     }
@@ -124,7 +105,7 @@ class FlutterUsabillaPlugin() : FlutterPlugin, MethodCallHandler, ActivityAware 
 
     private val closingCampaignReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            intent?.let {
+            intent.let {
                 val res: Map<String, Any> = getResult(intent, FeedbackResult.INTENT_FEEDBACK_RESULT_CAMPAIGN)
                 ubCampaignResult?.let {
                     ubCampaignResult?.success(res)
@@ -144,7 +125,6 @@ class FlutterUsabillaPlugin() : FlutterPlugin, MethodCallHandler, ActivityAware 
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
         activity = binding.activity
-
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
@@ -208,13 +188,13 @@ class FlutterUsabillaPlugin() : FlutterPlugin, MethodCallHandler, ActivityAware 
 
     private fun takeScreenshot(view: android.view.View): android.graphics.Bitmap? {
         var bitmap: Bitmap? = null
-        view?.isDrawingCacheEnabled = true
+        view.isDrawingCacheEnabled = true
         if (renderer?.javaClass == FlutterView::class.java) {
             bitmap = (renderer as FlutterView).bitmap
         } else if (renderer?.javaClass == FlutterRenderer::class.java) {
             bitmap = (renderer as FlutterRenderer).bitmap
         }
-        view?.isDrawingCacheEnabled = false
+        view.isDrawingCacheEnabled = false
         return bitmap
     }
 
