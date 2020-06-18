@@ -90,7 +90,15 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
     }
 
     private func takeScreenshot(view: UIView) -> UIImage {
-        return Usabilla.takeScreenshot(view)!
+        //FIXME Need to fix Usabilla.takeScreenshot(view)!
+        // - it produces half of image which is zoomed double.
+        //return Usabilla.takeScreenshot(view)!
+        let scale :CGFloat = UIScreen.main.scale
+        UIGraphicsBeginImageContextWithOptions(view.bounds.size, view.isOpaque, scale)
+        view.drawHierarchy(in: view.bounds, afterScreenUpdates: true)
+        let image :UIImage? = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image!
     }
 
     private func sendEvent(call: FlutterMethodCall, result: @escaping FlutterResult) {
