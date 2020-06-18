@@ -1,8 +1,7 @@
 name: flutter_usabilla
 description: A Flutter wrapper for Usabilla native iOS and Android SDKs.
 version: 0.0.1
-author:
-homepage:
+homepage: https://github.com/usabilla/usabilla-u4a-flutter
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
