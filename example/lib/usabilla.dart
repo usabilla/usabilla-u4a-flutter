@@ -279,10 +279,10 @@ class _HomeWidgetState extends State<HomeWidget> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.50,
                     child: TextField(
-                      textAlign: TextAlign.center,
                       controller: textFieldController,
-                      style: TextStyle(height: 0.5, color: Colors.black),
+                      style: TextStyle(height: 1.0, color: Colors.black),
                       decoration: InputDecoration(
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
                           errorText: _validate ? 'Value Can\'t Be Empty' : null,
                           border: OutlineInputBorder(),
                           hintText: 'Enter Event here'),
