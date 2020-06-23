@@ -156,7 +156,7 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         activity?.let {
             usabilla.initialize(activity!!.baseContext, appId)
             usabilla.updateFragmentManager((activity as FragmentActivity).supportFragmentManager)
-            result.success(true)
+            result.success(null)
             return
         }
         result.success(null)
