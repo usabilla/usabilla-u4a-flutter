@@ -1,7 +1,6 @@
 package com.usabilla.flutter_usabilla
 
 import android.R
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.usabilla.flutter_usabilla.FlutterUsabillaPlugin.Companion.FRAGMENT_TAG
@@ -12,14 +11,12 @@ import com.usabilla.sdk.ubform.UsabillaFormCallback
 import com.usabilla.sdk.ubform.sdk.form.FormClient
 
 class UsabillaFormCallbackImpl : UsabillaFormCallback {
-    private var form: DialogFragment? = null
 
     override fun formLoadSuccess(formClient: FormClient?) {
         formClient?.let {
-            form = formClient.fragment
+            val form = formClient.fragment
             val supportFragmentManager: FragmentManager = (activity as FragmentActivity).supportFragmentManager
-            supportFragmentManager.beginTransaction().replace(R.id.content, form!!, FRAGMENT_TAG).commit()
-            form = null
+            supportFragmentManager.beginTransaction().replace(R.id.content, form, FRAGMENT_TAG).commit()
         }
     }
 
@@ -32,7 +29,7 @@ class UsabillaFormCallbackImpl : UsabillaFormCallback {
     }
 
     override fun formLoadFail() {
-        var res: Map<String, Any> = mapOf<String, Any>(KEY_ERROR_MSG to "The form could not be loaded")
+        val res: Map<String, Any> = mapOf<String, Any>(KEY_ERROR_MSG to "The form could not be loaded")
         ubFormResult?.success(res)
         ubFormResult = null
     }
