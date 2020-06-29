@@ -7,7 +7,9 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
     weak var formNavigationController: UINavigationController?
     var ubFormResult: FlutterResult?
     var ubCampaignResult: FlutterResult?
-
+    let errorCodeString: String = "invalidArgs"
+    let errorMessageString: String = "Missing arguments"
+    
     override init() {
         super.init()
         Usabilla.delegate = self
@@ -69,19 +71,28 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
     }
 
     private func initialize(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let appId = (call.arguments as! Dictionary<String, AnyObject>)["appId"] as! String
+        guard let appId = (call.arguments as? Dictionary<String, AnyObject>)?["appId"] as? String else {
+            result(FlutterError( code: errorCodeString, message: "\(errorMessageString) appId", details: "Expected appId as String"))
+            return
+        }
         Usabilla.initialize(appID: appId)
         result(nil)
     }
 
     private func loadFeedbackForm(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let formId = (call.arguments as! Dictionary<String, AnyObject>)["formId"] as! String
+        guard let formId = (call.arguments as? Dictionary<String, AnyObject>)?["formId"] as? String else {
+            result(FlutterError( code: errorCodeString, message: "\(errorMessageString) formId", details: "Expected formId as String"))
+            return
+        }
         Usabilla.loadFeedbackForm(formId)
         ubFormResult = result
     }
 
     private func loadFeedbackFormWithCurrentViewScreenshot(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let formId = (call.arguments as! Dictionary<String, AnyObject>)["formId"] as! String
+        guard let formId = (call.arguments as? Dictionary<String, AnyObject>)?["formId"] as? String else {
+            result(FlutterError( code: errorCodeString, message: "\(errorMessageString) formId", details: "Expected formId as String"))
+            return
+        }
         if let rootVC = UIApplication.shared.keyWindow?.rootViewController {
             let screenshot = self.takeScreenshot(view: rootVC.view)
             Usabilla.loadFeedbackForm(formId, screenshot: screenshot)
@@ -102,7 +113,10 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
     }
 
     private func sendEvent(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let event = (call.arguments as! Dictionary<String, AnyObject>)["event"] as! String
+        guard let event = (call.arguments as? Dictionary<String, AnyObject>)?["event"] as? String else {
+            result(FlutterError( code: errorCodeString, message: "\(errorMessageString) event", details: "Expected event as String"))
+            return
+        }
         Usabilla.sendEvent(event: event)
         ubCampaignResult = result
     }
@@ -118,7 +132,10 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
     }
 
     private func setCustomVariables(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let variables = (call.arguments as! Dictionary<String, AnyObject>)["customVariables"] as! [String: Any]
+        guard let variables = (call.arguments as? Dictionary<String, AnyObject>)?["customVariables"] as? [String: Any] else {
+            result(FlutterError( code: errorCodeString, message: "\(errorMessageString) customVariables", details: "Expected customVariables as Dictionary"))
+            return
+        }
         let newCustomVariables = variables.mapValues { String(describing: $0) }
         Usabilla.customVariables = newCustomVariables
     }
@@ -128,8 +145,14 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
     }
 
     private func setDataMasking(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let masks = (call.arguments as! Dictionary<String, AnyObject>)["masks"] as! [String]
-        let maskChar = (call.arguments as! Dictionary<String, AnyObject>)["character"] as! String
+        guard let masks = (call.arguments as? Dictionary<String, AnyObject>)?["masks"] as? [String] else {
+            result(FlutterError( code: errorCodeString, message: "\(errorMessageString) masks", details: "Expected masks as Array"))
+            return
+        }
+        guard let maskChar = (call.arguments as? Dictionary<String, AnyObject>)?["character"] as? String else {
+            result(FlutterError( code: errorCodeString, message: "\(errorMessageString) maskChar", details: "Expected maskChar as String"))
+            return
+        }
         guard let maskCharacter = maskChar.first
             else {
                 Usabilla.setDataMasking(masks: Usabilla.defaultDataMasks, maskCharacter: "X")
@@ -140,7 +163,10 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
     }
 
     private func preloadFeedbackForms(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let formIDs = (call.arguments as! Dictionary<String, AnyObject>)["formIDs"] as! [String]
+        guard let formIDs = (call.arguments as? Dictionary<String, AnyObject>)?["formIDs"] as? [String] else {
+            result(FlutterError( code: errorCodeString, message: "\(errorMessageString) formIDs", details: "Expected formIDs as Array"))
+            return
+        }
         Usabilla.preloadFeedbackForms(withFormIDs: formIDs)
         result(true)
     }
@@ -151,13 +177,19 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
     }
 
     private func setDebugEnabled(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let debugEnabled = (call.arguments as! Dictionary<String, AnyObject>)["debugEnabled"] as! Bool
+        guard let debugEnabled = (call.arguments as? Dictionary<String, AnyObject>)?["debugEnabled"] as? Bool else {
+            result(FlutterError( code: errorCodeString, message: "\(errorMessageString) debugEnabled", details: "Expected debugEnabled as Boolean"))
+            return
+        }
         Usabilla.debugEnabled = debugEnabled
         result(true)
     }
 
     private func loadLocalizedStringFile(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        let localizedStringFile = (call.arguments as! Dictionary<String, AnyObject>)["localizedStringFile"] as! String
+        guard let localizedStringFile = (call.arguments as? Dictionary<String, AnyObject>)?["localizedStringFile"] as? String else {
+            result(FlutterError( code: errorCodeString, message: "\(errorMessageString) localizedStringFile", details: "Expected localizedStringFile as String"))
+            return
+        }
         Usabilla.localizedStringFile = localizedStringFile
         result(nil)
     }
