@@ -1,4 +1,4 @@
-# Usabilla for Apps - Flutter
+# Usabilla for Apps - Flutter [![pub package](https://img.shields.io/pub/v/flutter_usabilla.svg)](https://pub.dartlang.org/packages/flutter_usabilla)
 
 Usabilla for Apps allows you to collect feedback from your users with great ease and flexibility.
 This Flutter bridge to the Native Usabilla SDK allows you to load passive feedback forms and submit results from a Flutter Apps. This release uses the Usabilla SDK for `iOS` v6.4.7 and `Android` v7.0.3.
@@ -38,7 +38,7 @@ dependencies:
 
   ...
 
-  usabilla-u4a-flutter: ^${latestVersion}
+  flutter_usabilla: ^${latestVersion}
 ```
 
 2. Run the following command in your terminal after navigating to your project directory, to download the package
@@ -74,18 +74,26 @@ This release uses the Usabilla SDK v6.4.7.
  platform :ios, '9.0'
 ```
 
-Fetching the latest Usabilla SDK can be done by updating the pod. This can be done with the following command:
+Run Flutter App.
+Incase it fails for pods than fetching of latest Usabilla SDK can be done by updating the pod. This can be done with the following command:
 ```
 pod --repo-update install
 ```
 
 ### Android
 
-1. Make sure that your `MainActivity.java` extends `FlutterFragmentActivity`
+1. Make sure that your `MainActivity` extends `FlutterFragmentActivity`
 ``` Kotlin
-  import io.flutter.embedding.android.FlutterFragmentActivity
-   ...
-  class MainActivity: FlutterFragmentActivity()
+import androidx.annotation.NonNull;
+import io.flutter.embedding.android.FlutterFragmentActivity
+import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugins.GeneratedPluginRegistrant
+
+class MainActivity: FlutterFragmentActivity() {
+    override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
+        GeneratedPluginRegistrant.registerWith(flutterEngine);
+    }
+}
 ```
 2. Add `minSdkVersion`**:**`19` into `app's build.gradle`
 ```
