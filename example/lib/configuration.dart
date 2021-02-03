@@ -11,4 +11,4 @@ const String formId = 'YOUR_FORM_ID_HERE';
 const String event = 'YOUR_EVENT_TAG_HERE';
 
 // Replace custom variable with your usabilla custom variable created for targeting specific Campaign..
-const Map customVariable = {'YOUR_KEY_HERE': 'YOUR_VALUE_HERE'};
+const Map<String,String> customVariable = {'YOUR_KEY_HERE': 'YOUR_VALUE_HERE'};
