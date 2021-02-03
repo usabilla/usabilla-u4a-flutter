@@ -18,7 +18,7 @@ class FlutterUsabilla {
   }
 
   /// Sets custom variables for targeting Campaigns.
-  static Future<void> setCustomVariables(Map customVariables) async {
+  static Future<void> setCustomVariables(Map<String, String> customVariables) async {
     await _channel.invokeMethod('setCustomVariables', <String, dynamic>{
       'customVariables': customVariables,
     });

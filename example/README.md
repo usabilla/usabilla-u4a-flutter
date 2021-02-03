@@ -42,7 +42,7 @@ import 'package:flutter_usabilla/flutter_usabilla.dart';
 const String appId = 'YOUR_APP_ID_HERE';
 const String formId = 'YOUR_FORM_ID_HERE';
 const String event = 'YOUR_EVENT_TAG_HERE';
-const Map customVariable = {'YOUR_KEY_HERE': 'YOUR_VALUE_HERE'};
+const Map<String, String> customVariable = {'YOUR_KEY_HERE': 'YOUR_VALUE_HERE'};
 ```
 
 ### Functions
@@ -138,7 +138,7 @@ dismiss() → void
 setCustomVariables(Map customVariables) → void
 ```
 ``` dart
-  Map customVariable = {'YOUR_KEY_HERE': 'YOUR_VALUE_HERE'};
+  Map<String, String> customVariable = {'YOUR_KEY_HERE': 'YOUR_VALUE_HERE'};
   Future<void> setCustomVariable() async {
     try {
       await FlutterUsabilla.setCustomVariables(customVariable);

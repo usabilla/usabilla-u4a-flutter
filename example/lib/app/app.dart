@@ -111,8 +111,8 @@ class _HomeWidgetState extends State<HomeWidget> {
     print('custom variable started');
     try {
       await FlutterUsabilla.setCustomVariables(ubConfig.customVariable);
-    } on PlatformException {
-      print('Failed to get platform version.');
+    } on PlatformException catch (err){
+      print(err);
     }
   }
 

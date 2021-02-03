@@ -320,13 +320,12 @@ In order to set custom variables in the Usabilla native library it's necessary t
 `FlutterUsabilla.setCustomVariables(customVariable)`
 
 This method accepts as parameter a valid JSON object with two limitations:
-```Map customVariable = {'test': '1'};```
+```Map<String,String> customVariable = {'test': '1'};```
+Trying to set an invalid object/ Map as a custom variable will result in that object not being set and in an error being printed in the console.
 
-- Objects should only contain same type components.
-- Objects can be nested up to one level (currently undergoing work to enable deeper nesting).
+Custom variables are added as extra feedback data with every feedback item sent by the SDK, whether from a passive feedback or a campaign.
 
-**NOTE**: Feedback sent without respecting those limitations will still be received and saved, but the values of the customer input context won't be displayed nor exported.
-
+**NOTE**: Custom variables can be used as targeting options, as long as the key,value are String type.
 
 ## Support
 

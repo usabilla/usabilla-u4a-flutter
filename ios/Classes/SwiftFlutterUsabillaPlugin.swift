@@ -132,12 +132,11 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
     }
 
     private func setCustomVariables(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let variables = (call.arguments as? Dictionary<String, AnyObject>)?["customVariables"] as? [String: Any] else {
-            result(FlutterError( code: errorCodeString, message: "\(errorMessageString) customVariables", details: "Expected customVariables as Dictionary"))
+        guard let variables = (call.arguments as? Dictionary<String, AnyObject>)?["customVariables"] as? [String: String] else {
+            result(FlutterError( code: errorCodeString, message: "\(errorMessageString) customVariables", details: "Expected customVariables as Dictionary of String [String: String]"))
             return
         }
-        let newCustomVariables = variables.mapValues { String(describing: $0) }
-        Usabilla.customVariables = newCustomVariables
+        Usabilla.customVariables = variables
     }
 
     private func getDefaultDataMasks(result: @escaping FlutterResult) {
