@@ -12,7 +12,7 @@ import com.usabilla.sdk.ubform.sdk.form.FormClient
 
 class UsabillaFormCallbackImpl : UsabillaFormCallback {
 
-    override fun formLoadSuccess(formClient: FormClient?) {
+    override fun formLoadSuccess(formClient: FormClient) {
         formClient?.let {
             val form = formClient.fragment
             val supportFragmentManager: FragmentManager = (activity as FragmentActivity).supportFragmentManager
@@ -20,7 +20,7 @@ class UsabillaFormCallbackImpl : UsabillaFormCallback {
         }
     }
 
-    override fun mainButtonTextUpdated(s: String?) {
+    override fun mainButtonTextUpdated(s: String) {
         val mainButtonTextArg: String = "mainButtonText"
         var result: Map<String, Any> = mapOf<String, Any>(mainButtonTextArg to s!!)
         //FIXME Need to fix mainButtonTextUpdated
