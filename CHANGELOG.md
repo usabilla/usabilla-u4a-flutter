@@ -1,5 +1,9 @@
+## 1.1.0
+* Introduced Null-safety
+* Update documentation
+
 ## 1.0.1
-* Updated documentation
+* Update documentation
 
 ## 1.0.0
 * iOS
