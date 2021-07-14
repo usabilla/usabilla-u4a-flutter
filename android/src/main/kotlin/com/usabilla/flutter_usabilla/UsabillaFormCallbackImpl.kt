@@ -1,20 +1,20 @@
 package com.usabilla.flutter_usabilla
 
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.usabilla.flutter_usabilla.FlutterUsabillaPlugin.Companion.FRAGMENT_TAG
-import com.usabilla.flutter_usabilla.FlutterUsabillaPlugin.Companion.KEY_ERROR_MSG
-import com.usabilla.flutter_usabilla.FlutterUsabillaPlugin.Companion.activity
 import com.usabilla.flutter_usabilla.FlutterUsabillaPlugin.Companion.ubFormResult
 import com.usabilla.sdk.ubform.UsabillaFormCallback
 import com.usabilla.sdk.ubform.sdk.form.FormClient
 
-class UsabillaFormCallbackImpl : UsabillaFormCallback {
+class UsabillaFormCallbackImpl(private val fragmentManager: FragmentManager) :
+    UsabillaFormCallback {
+
+    private val keyErrorMessage = "error"
 
     override fun formLoadSuccess(form: FormClient) {
         val formFragment = form.fragment
-        (activity as FragmentActivity).supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.content, formFragment, FRAGMENT_TAG)
+        fragmentManager.beginTransaction()
+            .replace(android.R.id.content, formFragment, FRAGMENT_TAG)
             .commit()
     }
 
@@ -27,8 +27,8 @@ class UsabillaFormCallbackImpl : UsabillaFormCallback {
 
     override fun formLoadFail() {
         val res: Map<String, Any> =
-            mapOf<String, Any>(KEY_ERROR_MSG to "The form could not be loaded")
-        ubFormResult.success(res)
+            mapOf<String, Any>(keyErrorMessage to "The form could not be loaded")
+        ubFormResult?.success(res)
         ubFormResult = null
     }
 }
