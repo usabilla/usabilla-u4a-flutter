@@ -7,9 +7,8 @@ class FlutterUsabilla {
   static const MethodChannel _channel = const MethodChannel('flutter_usabilla');
 
   /// Gives the current platform version.
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
+  static Future<String?> get platformVersion async {
+    return await _channel.invokeMethod('getPlatformVersion');
   }
 
   /// Manually Dismiss the Forms / Campaign.
@@ -31,19 +30,13 @@ class FlutterUsabilla {
   }
 
   /// Returns masks List to check what is the defined rule.
-  static Future<List> get defaultDataMasks async {
-    final List defaultDataMask =
-        await _channel.invokeMethod('getDefaultDataMasks');
-    return defaultDataMask;
+  static Future<List?> get defaultDataMasks async {
+    return await _channel.invokeMethod('getDefaultDataMasks');
   }
 
   /// Load the Campaign & Returns a Map, contains result - rating, pageindex, sent flag.
-  static Future<Map> sendEvent(String event) async {
-    final Map ubResult =
-        await _channel.invokeMethod('sendEvent', <String, dynamic>{
-      'event': event,
-    });
-    return ubResult;
+  static Future<Map?> sendEvent(String event) async {
+    return await _channel.invokeMethod('sendEvent', <String, dynamic>{ 'event': event });
   }
 
   /// Remove cached forms.
@@ -64,22 +57,15 @@ class FlutterUsabilla {
   }
 
   /// Load the Passive Form, using formId & Returns a Map, contains result - rating, pageindex, sent flag.
-  static Future<Map> loadFeedbackForm(String formId) async {
-    final Map ubFormResult =
-        await _channel.invokeMethod('loadFeedbackForm', <String, dynamic>{
-      'formId': formId,
-    });
-    return ubFormResult;
+  static Future<Map?> loadFeedbackForm(String formId) async {
+    return await _channel.invokeMethod('loadFeedbackForm', <String, dynamic>{ 'formId': formId });
   }
 
   /// Load the Passive Form with current screen captured, using formId & Returns a Map, contains result - rating, pageindex, sent flag.
-  static Future<Map> loadFeedbackFormWithCurrentViewScreenshot(
-      String formId) async {
-    final Map ubFormResultWithImage = await _channel.invokeMethod(
-        'loadFeedbackFormWithCurrentViewScreenshot', <String, dynamic>{
-      'formId': formId,
-    });
-    return ubFormResultWithImage;
+  static Future<Map?> loadFeedbackFormWithCurrentViewScreenshot(String formId) async {
+    return await _channel.invokeMethod(
+        'loadFeedbackFormWithCurrentViewScreenshot', <String, dynamic>{ 'formId': formId }
+        );
   }
 
   /// Sets filename to look for localization in IOS.
@@ -94,20 +80,12 @@ class FlutterUsabilla {
   }
 
   /// Loads Passive Forms for offline usage and returns true if loaded successfully.
-  static Future<bool> preloadFeedbackForms(List formIDs) async {
-    final bool _preload =
-        await _channel.invokeMethod('preloadFeedbackForms', <String, dynamic>{
-      'formIDs': formIDs,
-    });
-    return _preload;
+  static Future<bool?> preloadFeedbackForms(List formIDs) async {
+    return await _channel.invokeMethod('preloadFeedbackForms', <String, dynamic>{ 'formIDs': formIDs });
   }
 
   /// Sets and returns debug state from the SDK.
-  static Future<bool> setDebugEnabled(bool debugEnabled) async {
-    final bool _debugEnabled =
-        await _channel.invokeMethod('setDebugEnabled', <String, dynamic>{
-      'debugEnabled': debugEnabled,
-    });
-    return _debugEnabled;
+  static Future<bool?> setDebugEnabled(bool debugEnabled) async {
+    return await _channel.invokeMethod('setDebugEnabled', <String, dynamic>{ 'debugEnabled': debugEnabled });
   }
 }
