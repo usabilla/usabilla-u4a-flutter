@@ -31,101 +31,85 @@ import java.util.ArrayList
 
 class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
-    private lateinit var channel: MethodChannel
-    private lateinit var registry: TextureRegistry
-
-    private val usabilla: Usabilla = Usabilla
-    private val usabillaFormCallbackImpl = UsabillaFormCallbackImpl()
+    companion object {
+        var ubFormResult: Result? = null
+        const val FRAGMENT_TAG = "passive form"
+    }
 
     private val logTag = "UsabillaFlutterBridge"
+    private val methodChannelName = "flutter_usabilla"
     private val keyRating = "rating"
     private val keyAbandonedPageIndex = "abandonedPageIndex"
     private val keySent = "sent"
 
-    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        registry = flutterPluginBinding.textureRegistry
-        channel = MethodChannel(flutterPluginBinding.binaryMessenger, methodChannelName)
-        channel.setMethodCallHandler(FlutterUsabillaPlugin())
+    private lateinit var channel: MethodChannel
+    private lateinit var registry: TextureRegistry
+    private lateinit var activity: Activity
 
-        val closeManager: LocalBroadcastManager = LocalBroadcastManager.getInstance(flutterPluginBinding.applicationContext)
-        closeManager.registerReceiver(closingFormReceiver, IntentFilter(INTENT_CLOSE_FORM))
-        closeManager.registerReceiver(closingCampaignReceiver, IntentFilter(INTENT_CLOSE_CAMPAIGN))
-    }
-
-    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        channel.setMethodCallHandler(null)
-        val closeManager: LocalBroadcastManager = LocalBroadcastManager.getInstance(binding.applicationContext)
-        closeManager.unregisterReceiver(closingFormReceiver)
-        closeManager.unregisterReceiver(closingCampaignReceiver)
-    }
-
-    companion object {
-        var activity: Activity? = null
-        var ubFormResult: Result? = null
-        var ubCampaignResult: Result? = null
-
-        const val methodChannelName = "flutter_usabilla"
-        const val FRAGMENT_TAG = "passive form"
-        const val KEY_ERROR_MSG = "error"
-    }
-
-    private fun getResult(intent: Intent, feedbackResultType: String): Map<String, Any> {
-        val res: FeedbackResult? = intent.getParcelableExtra(feedbackResultType)
-        return mapOf<String, Any>(
-            keyRating to (res?.rating ?: -1),
-            keyAbandonedPageIndex to (res?.abandonedPageIndex ?: -1),
-            keySent to (res?.isSent ?: false)
-        )
-    }
+    private var ubCampaignResult: Result? = null
 
     private val closingFormReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            intent.let {
-                val res: Map<String, Any> = getResult(intent, FeedbackResult.INTENT_FEEDBACK_RESULT)
-                val activity: Activity? = activity
-                if (activity is FragmentActivity) {
-                    val supportFragmentManager: FragmentManager = activity.supportFragmentManager
-                    supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)?.let { fragment ->
-                        supportFragmentManager.beginTransaction().remove(fragment).commit()
-                    }
-                    ubFormResult?.success(res)
-                    ubFormResult = null
+            val res: Map<String, Any> = getResult(intent, FeedbackResult.INTENT_FEEDBACK_RESULT)
+            (activity as? FragmentActivity)?.let {
+                val supportFragmentManager: FragmentManager = it.supportFragmentManager
+                supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)?.let { fragment ->
+                    supportFragmentManager.beginTransaction().remove(fragment).commit()
                 }
+                ubFormResult?.success(res)
+                ubFormResult = null
             }
         }
     }
 
     private val closingCampaignReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            intent.let {
-                val res: Map<String, Any> = getResult(intent, FeedbackResult.INTENT_FEEDBACK_RESULT_CAMPAIGN)
-                ubCampaignResult?.success(res)
-                ubCampaignResult = null
-            }
+            val res: Map<String, Any> =
+                getResult(intent, FeedbackResult.INTENT_FEEDBACK_RESULT_CAMPAIGN)
+            ubCampaignResult?.success(res)
+            ubCampaignResult = null
         }
+    }
+
+    override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+        registry = flutterPluginBinding.textureRegistry
+        channel = MethodChannel(flutterPluginBinding.binaryMessenger, methodChannelName)
+        channel.setMethodCallHandler(this)
+
+        val closeManager: LocalBroadcastManager =
+            LocalBroadcastManager.getInstance(flutterPluginBinding.applicationContext)
+        closeManager.registerReceiver(closingFormReceiver, IntentFilter(INTENT_CLOSE_FORM))
+        closeManager.registerReceiver(closingCampaignReceiver, IntentFilter(INTENT_CLOSE_CAMPAIGN))
+    }
+
+    override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+        channel.setMethodCallHandler(null)
+        val closeManager: LocalBroadcastManager =
+            LocalBroadcastManager.getInstance(binding.applicationContext)
+        closeManager.unregisterReceiver(closingFormReceiver)
+        closeManager.unregisterReceiver(closingCampaignReceiver)
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
     }
 
-    override fun onDetachedFromActivity() {
-        activity = null
-    }
+    override fun onDetachedFromActivity() = Unit
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
         activity = binding.activity
     }
 
-    override fun onDetachedFromActivityForConfigChanges() {
-        activity = null
-    }
+    override fun onDetachedFromActivityForConfigChanges() = Unit
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
             "initialize" -> initialize(call, result)
             "loadFeedbackForm" -> loadFeedbackForm(call, result)
-            "loadFeedbackFormWithCurrentViewScreenshot" -> loadFeedbackFormWithCurrentViewScreenshot(call, result)
+            "loadFeedbackFormWithCurrentViewScreenshot" -> loadFeedbackFormWithCurrentViewScreenshot(
+                call,
+                result
+            )
             "sendEvent" -> sendEvent(call, result)
             "resetCampaignData" -> resetCampaignData(result)
             "dismiss" -> dismiss(result)
@@ -140,37 +124,49 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         }
     }
 
+    private fun getResult(intent: Intent, feedbackResultType: String): Map<String, Any> {
+        val res: FeedbackResult? = intent.getParcelableExtra(feedbackResultType)
+        return mapOf<String, Any>(
+            keyRating to (res?.rating ?: -1),
+            keyAbandonedPageIndex to (res?.abandonedPageIndex ?: -1),
+            keySent to (res?.isSent ?: false)
+        )
+    }
+
     private fun initialize(call: MethodCall, result: Result) {
         val appId = getArgumentFromCall<String?>(call, "appId")
-        activity?.let {
-            usabilla.initialize(it.baseContext, appId)
-            usabilla.updateFragmentManager((it as FragmentActivity).supportFragmentManager)
-            result.success(true)
-            return
-        }
-        result.success(null)
-        Log.e(logTag, "$appId - Initialisation not possible. Android activity is null")
+        Usabilla.initialize(activity.baseContext, appId)
+        Usabilla.updateFragmentManager((activity as FragmentActivity).supportFragmentManager)
+        result.success(true)
     }
 
     private fun loadFeedbackForm(call: MethodCall, result: Result) {
         val formId = getArgumentFromCall<String?>(call, "formId")
-        usabilla.loadFeedbackForm(formId = formId!!, callback = usabillaFormCallbackImpl)
+        (activity as? FragmentActivity)?.let {
+            val fragmentManager = it.supportFragmentManager
+            Usabilla.loadFeedbackForm(
+                formId = formId!!,
+                callback = UsabillaFormCallbackImpl(fragmentManager)
+            )
+        }
         ubFormResult = result
-        return
     }
 
     private fun loadFeedbackFormWithCurrentViewScreenshot(call: MethodCall, result: Result) {
         val formId = getArgumentFromCall<String?>(call, "formId")
-        activity?.let {
-            //FIXME Need to fix usabilla.takeScreenshot()
-            // - it produces just a black image
-            //var bitmap: Bitmap? = usabilla.takeScreenshot(view)
+        (activity as? FragmentActivity)?.let {
+            //FIXME Need to fix usabilla.takeScreenshot() it produces just a black image
             val bitmap: Bitmap? = takeScreenshot(it.window.decorView.rootView)
-            usabilla.loadFeedbackForm(formId = formId!!, screenshot = bitmap, callback = usabillaFormCallbackImpl)
+            val fragmentManager = it.supportFragmentManager
+            Usabilla.loadFeedbackForm(
+                formId = formId!!,
+                screenshot = bitmap,
+                callback = UsabillaFormCallbackImpl(fragmentManager)
+            )
             ubFormResult = result
             return
         }
-        Log.e(logTag, "$formId - Loading feedback form not possible. Android activity is null")
+        Log.e(logTag, "$formId - Loading form not possible. Android activity is not of type FragmentActivity")
     }
 
     private fun takeScreenshot(view: View): Bitmap? {
@@ -187,35 +183,23 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private fun sendEvent(call: MethodCall, result: Result) {
         val event = getArgumentFromCall<String?>(call, "event")
-        activity?.let {
-            usabilla.sendEvent(it.baseContext, event!!)
-            ubCampaignResult = result
-            return
-        }
-        Log.e(logTag, "$event -Sending event to Usabilla is not possible. Android activity is null")
+        Usabilla.sendEvent(activity.baseContext, event!!)
+        ubCampaignResult = result
     }
 
     private fun resetCampaignData(result: Result) {
-        activity?.let {
-            usabilla.resetCampaignData(it.baseContext)
-            result.success(null)
-            return
-        }
-        Log.e(logTag, "Resetting Usabilla campaigns is not possible. Android activity is null")
+        Usabilla.resetCampaignData(activity.baseContext)
+        result.success(null)
     }
 
     private fun dismiss(result: Result) {
         result.success(null)
-        activity?.let {
-            usabilla.dismiss(it.baseContext)
-            return
-        }
-        Log.e(logTag, "Dismissing the Usabilla form is not possible. Android activity is null")
+        Usabilla.dismiss(activity.baseContext)
     }
 
     private fun setCustomVariables(call: MethodCall, result: Result) {
         val customVariables = getArgumentFromCall<HashMap<String, Any>>(call, "customVariables")
-        usabilla.customVariables = customVariables
+        Usabilla.customVariables = customVariables
         result.success(null)
     }
 
@@ -226,24 +210,24 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private fun setDataMasking(call: MethodCall, result: Result) {
         val masks = getArgumentFromCall<ArrayList<String>>(call, "masks")
         val character = getArgumentFromCall<String>(call, "character")
-        usabilla.setDataMasking(masks, character[0])
+        Usabilla.setDataMasking(masks, character[0])
         result.success(null)
     }
 
     private fun preloadFeedbackForms(call: MethodCall, result: Result) {
         val formIDs = getArgumentFromCall<ArrayList<String>>(call, "formIDs")
-        usabilla.preloadFeedbackForms(formIDs)
+        Usabilla.preloadFeedbackForms(formIDs)
         result.success(true)
     }
 
     private fun removeCachedForms(result: Result) {
-        usabilla.removeCachedForms()
+        Usabilla.removeCachedForms()
         result.success(null)
     }
 
     private fun setDebugEnabled(call: MethodCall, result: Result) {
         val debugEnabled = getArgumentFromCall<Boolean>(call, "debugEnabled")
-        usabilla.debugEnabled = debugEnabled
+        Usabilla.debugEnabled = debugEnabled
         result.success(true)
     }
 
