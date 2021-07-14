@@ -118,7 +118,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   /// Shows Active form / Campaign
   Future<void> sendEvent() async {
-    Map ubResult;
+    Map? ubResult;
     String event = textFieldController.text;
     if (event.isNotEmpty) {
       setState(() {
@@ -149,7 +149,7 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   /// Shows Passive form
   Future<void> showForm() async {
-    Map ubResult;
+    Map? ubResult;
     try {
       ubResult = await FlutterUsabilla.loadFeedbackForm(ubConfig.formId);
     } on PlatformException {
