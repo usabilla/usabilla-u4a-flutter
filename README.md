@@ -1,7 +1,8 @@
 # Usabilla for Apps - Flutter [![pub package](https://img.shields.io/pub/v/flutter_usabilla.svg)](https://pub.dartlang.org/packages/flutter_usabilla)
 
 Usabilla for Apps allows you to collect feedback from your users with great ease and flexibility.
-This Flutter bridge to the Native Usabilla SDK allows you to load passive feedback forms and submit results from a Flutter Apps. This release uses the Usabilla SDK for `iOS` v6.4.7 and `Android` v7.0.3.
+This Flutter bridge to the Native Usabilla SDK allows you to load passive feedback forms and submit results from a Flutter Apps.
+This release uses the Usabilla SDK for `iOS` v6.x.x and `Android` v7.x.x.
 Please follow these steps.
 
 - [Usabilla for Apps - Flutter](#usabilla-for-apps---flutter)
