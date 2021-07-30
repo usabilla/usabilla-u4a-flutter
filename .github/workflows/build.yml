@@ -1,0 +1,52 @@
+name: Build
+on:
+  create:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          flutter-version: '2.2.3'
+      - name: Install packages
+        run: flutter pub get
+      - name: Credentials check
+        run: |
+          mkdir ~/.pub-cache
+          touch ~/.pub-cache/credentials.json
+          if [ -z "${{secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN}}" ]; then
+            echo "Missing PUB_DEV_PUBLISH_ACCESS_TOKEN environment variable"
+            exit 1
+          fi
+
+          if [ -z "${{secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN}}" ]; then
+            echo "Missing PUB_DEV_PUBLISH_REFRESH_TOKEN environment variable"
+            exit 1
+          fi
+
+          if [ -z "${{secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT}}" ]; then
+            echo "Missing PUB_DEV_PUBLISH_TOKEN_ENDPOINT environment variable"
+            exit 1
+          fi
+
+          if [ -z "${{secrets.PUB_DEV_PUBLISH_EXPIRATION}}" ]; then
+            echo "Missing PUB_DEV_PUBLISH_EXPIRATION environment variable"
+            exit 1
+          fi
+          cat <<EOF > ~/.pub-cache/credentials.json
+          {
+            "accessToken":"${{secrets.PUB_DEV_PUBLISH_ACCESS_TOKEN}}",
+            "refreshToken":"${{secrets.PUB_DEV_PUBLISH_REFRESH_TOKEN}}",
+            "tokenEndpoint":"${{secrets.PUB_DEV_PUBLISH_TOKEN_ENDPOINT}}",
+            "scopes":["https://www.googleapis.com/auth/userinfo.email","openid"],
+            "expiration":${{secrets.PUB_DEV_PUBLISH_EXPIRATION}}
+          }
+          EOF
+      - name: Publish
+        run: flutter pub publish -f
