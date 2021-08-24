@@ -151,7 +151,7 @@ class _HomeWidgetState extends State<HomeWidget> {
   Future<void> showForm() async {
     Map? ubResult;
     try {
-      ubResult = await FlutterUsabilla.loadFeedbackForm(ubConfig.formId);
+      ubResult = await FlutterUsabilla.loadFeedbackFormWithCurrentViewScreenshot(ubConfig.formId);
     } on PlatformException {
       print('Failed to loadFeedbackForm.');
     }

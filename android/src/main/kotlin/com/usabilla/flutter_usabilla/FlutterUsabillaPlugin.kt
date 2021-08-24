@@ -155,7 +155,6 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private fun loadFeedbackFormWithCurrentViewScreenshot(call: MethodCall, result: Result) {
         val formId = getArgumentFromCall<String?>(call, "formId")
         (activity as? FragmentActivity)?.let {
-            //FIXME Need to fix usabilla.takeScreenshot() it produces just a black image
             val bitmap: Bitmap? = takeScreenshot(it.window.decorView.rootView)
             val fragmentManager = it.supportFragmentManager
             Usabilla.loadFeedbackForm(
