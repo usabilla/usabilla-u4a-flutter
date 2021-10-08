@@ -75,32 +75,29 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         registry = flutterPluginBinding.textureRegistry
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, methodChannelName)
         channel.setMethodCallHandler(this)
-
-        val closeManager: LocalBroadcastManager =
-            LocalBroadcastManager.getInstance(flutterPluginBinding.applicationContext)
-        closeManager.registerReceiver(closingFormReceiver, IntentFilter(INTENT_CLOSE_FORM))
-        closeManager.registerReceiver(closingCampaignReceiver, IntentFilter(INTENT_CLOSE_CAMPAIGN))
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
         channel.setMethodCallHandler(null)
-        val closeManager: LocalBroadcastManager =
-            LocalBroadcastManager.getInstance(binding.applicationContext)
-        closeManager.unregisterReceiver(closingFormReceiver)
-        closeManager.unregisterReceiver(closingCampaignReceiver)
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         activity = binding.activity
+        attachReceivers(activity.applicationContext)
     }
 
-    override fun onDetachedFromActivity() = Unit
+    override fun onDetachedFromActivity() {
+        detachReceivers(activity.applicationContext)
+    }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
         activity = binding.activity
+        attachReceivers(activity.applicationContext)
     }
 
-    override fun onDetachedFromActivityForConfigChanges() = Unit
+    override fun onDetachedFromActivityForConfigChanges() {
+        detachReceivers(activity.applicationContext)
+    }
 
     override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
         when (call.method) {
@@ -121,6 +118,20 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             "setDebugEnabled" -> setDebugEnabled(call, result)
             "getPlatformVersion" -> result.success(android.os.Build.VERSION.RELEASE)
             else -> result.notImplemented()
+        }
+    }
+
+    private fun attachReceivers(context: Context) {
+        LocalBroadcastManager.getInstance(context).apply {
+            registerReceiver(closingFormReceiver, IntentFilter(INTENT_CLOSE_FORM))
+            registerReceiver(closingCampaignReceiver, IntentFilter(INTENT_CLOSE_CAMPAIGN))
+        }
+    }
+
+    private fun detachReceivers(context: Context) {
+        LocalBroadcastManager.getInstance(context).apply {
+            unregisterReceiver(closingFormReceiver)
+            unregisterReceiver(closingCampaignReceiver)
         }
     }
 
