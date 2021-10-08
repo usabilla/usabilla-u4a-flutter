@@ -1,17 +1,23 @@
-## 2.0.0
-* Migration to null-safety
-* Minor bug-fixes
-* Update dependencies
+## v2.0.1
+#### Fix
+- Broadcast receiver duplication
 
-## 1.1.0
-* Update documentation
+## v2.0.0
+#### Fix
+- Migration to null-safety
+- Minor bugs
+#### Update
+- Dependencies
 
-## 1.0.1
-* Update documentation
+## v1.1.0
+#### Update
+- Documentation
 
-## 1.0.0
-* iOS
-  * Supports all the features explained in [Usabilla Native IOS SDK](https://github.com/usabilla/usabilla-u4a-ios-swift-sdk)
-* Android
-  * Supports all the features explained in [Usabilla Native Android SDK](https://github.com/usabilla/usabilla-u4a-android-sdk)
-  
+## v1.0.1
+#### Update
+- Documentation
+
+## v1.0.0
+#### Add
+- Android features as explained in [Usabilla Native Android SDK](https://github.com/usabilla/usabilla-u4a-android-sdk)
+- iOS features as explained in [Usabilla Native IOS SDK](https://github.com/usabilla/usabilla-u4a-ios-swift-sdk)
