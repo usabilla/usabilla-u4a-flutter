@@ -1,3 +1,11 @@
+## v2.1.0
+#### Update
+- Kotlin version to 1.6.10
+- Gradle build tool to 7.1.2
+- CompileSdkVersion to 31
+- Dependency AndroidX annotation to 1.3.0
+- Dependency AndroidX fragment-ktx to 1.4.1
+
 ## v2.0.1
 #### Fix
 - Broadcast receiver duplication
