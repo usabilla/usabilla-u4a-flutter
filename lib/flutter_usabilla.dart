@@ -5,6 +5,13 @@ import 'package:flutter/services.dart';
 ///FlutterUsabilla flutter wrapper for usabilla sdk.
 class FlutterUsabilla {
   static const MethodChannel _channel = const MethodChannel('flutter_usabilla');
+  static const EventChannel _eventChannel = const EventChannel("flutter_usabilla_events");
+
+  static Future<Stream> standardEventsData() async {
+    Stream _stream;
+    _stream = _eventChannel.receiveBroadcastStream();
+    return _stream;
+  }
 
   /// Gives the current platform version.
   static Future<String?> get platformVersion async {
