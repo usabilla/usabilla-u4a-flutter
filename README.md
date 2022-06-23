@@ -14,6 +14,7 @@ Please follow these steps.
   - [Campaigns](#campaigns)
     - [The App Id](#the-app-id)
     - [Events](#events)
+    - [Standard Events](#stnadard-events)
     - [Campaign submission callback](#campaign-submission-callback)
     - [Reset Campaign data](#reset-campaign-data)
     - [Managing an existing Campaign](#managing-an-existing-campaign)
@@ -157,6 +158,43 @@ It is also possible to segment your user base using **Custom Variables**. **Cust
 For more on how to use custom variables, have a look at [Custom Variables](#custom-variables).
 
 **Note: A campaign will never be triggered for the same user more than once.**
+
+### Standard Events
+
+From **`v2.2.0`** onwards we are introducing a new feature **Standard Events**.
+
+**Note : Now with Standard Events you can show campaigns in your application(Host application embedded with GetFeedback Digital/ Usabilla SDK) without adding any extra lines of code. You just have to create Standard Campaigns(Campaigns with Default/System Events) with your `User-Account` at `GetFeedback`.**
+
+Currently we are supporting these lifecycle / system events : 
+ - `LAUNCH` : Define as when the app is entering foreground
+ - `EXIT` : Define as when the app is entering to the background
+ - `CRASH` : Define as when the app is crashed ( terminated due to an unexpected behaviour)
+
+**Note : SDK will not listen to any Default / System events, until it has been initialised and it is recommended to initialise only once. In order to make this work properly, SDK has to be initialize using `FlutterUsabilla.initialize` at the earliest possibility, preferably in the initState method:**
+
+To get some additional information about the response left by your user, you have the option to use the `callback` method. This is a listener that listens in to the moment a Campaign with standard events is closed.
+
+```
+  Future<void> standardEventsData() async {
+    Stream stream;
+    try {
+      stream = await FlutterUsabilla.standardEventsData();
+      stream.listen(_onData, onError: _onErrorData);
+    } on PlatformException {
+      print('Failed to get standardEventsData.');
+    }
+  }
+  
+  static void _onData(event) {
+    print('response : $event');
+  }
+
+  static void _onErrorData(error) {
+    print('error: $error');
+  }
+```
+
+[Click here](https://support.usabilla.com/hc/en-us/articles/4747575452562) to read more about Standard Events.
 
 ### Campaign submission callback
 
