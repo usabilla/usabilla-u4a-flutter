@@ -1,3 +1,7 @@
+## v2.2.0
+#### Update
+- Added Standard Events
+
 ## v2.1.0
 #### Update
 - Kotlin version to 1.6.10
