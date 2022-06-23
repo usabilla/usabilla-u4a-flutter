@@ -21,6 +21,7 @@ import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.embedding.engine.renderer.FlutterRenderer
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -29,7 +30,7 @@ import io.flutter.view.FlutterView
 import io.flutter.view.TextureRegistry
 import java.util.ArrayList
 
-class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
+class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, EventChannel.StreamHandler {
 
     companion object {
         var ubFormResult: Result? = null
@@ -38,15 +39,18 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
 
     private val logTag = "UsabillaFlutterBridge"
     private val methodChannelName = "flutter_usabilla"
+    private val eventChannelName = "flutter_usabilla_events"
     private val keyRating = "rating"
     private val keyAbandonedPageIndex = "abandonedPageIndex"
     private val keySent = "sent"
 
     private lateinit var channel: MethodChannel
+    private lateinit var eventChannel: EventChannel
     private lateinit var registry: TextureRegistry
     private lateinit var activity: Activity
 
     private var ubCampaignResult: Result? = null
+    private var eventSink:EventChannel.EventSink? = null
 
     private val closingFormReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -66,8 +70,12 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         override fun onReceive(context: Context, intent: Intent) {
             val res: Map<String, Any> =
                 getResult(intent, FeedbackResult.INTENT_FEEDBACK_RESULT_CAMPAIGN)
-            ubCampaignResult?.success(res)
-            ubCampaignResult = null
+            if (ubCampaignResult != null) {
+                ubCampaignResult?.success(res)
+                ubCampaignResult = null
+                return
+            }
+            eventSink?.let { it?.success(res) } ?: return
         }
     }
 
@@ -75,6 +83,9 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
         registry = flutterPluginBinding.textureRegistry
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, methodChannelName)
         channel.setMethodCallHandler(this)
+
+        eventChannel = EventChannel(flutterPluginBinding.binaryMessenger, eventChannelName)
+        eventChannel.setStreamHandler(this)
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -244,5 +255,13 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
     private inline fun <reified T> getArgumentFromCall(call: MethodCall, key: String): T {
         val args = call.arguments as? HashMap<*, *> ?: HashMap<String, Any>()
         return args[key] as T
+    }
+
+    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+        eventSink = events
+    }
+
+    override fun onCancel(arguments: Any?) {
+        eventSink = null
     }
 }

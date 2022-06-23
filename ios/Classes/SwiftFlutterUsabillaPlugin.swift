@@ -2,8 +2,8 @@ import Flutter
 import UIKit
 import Usabilla
 
-public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
-
+public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin, FlutterStreamHandler {
+    private var eventSink: FlutterEventSink? = nil
     weak var formNavigationController: UINavigationController?
     var ubFormResult: FlutterResult?
     var ubCampaignResult: FlutterResult?
@@ -19,8 +19,20 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin {
         let channel = FlutterMethodChannel(name: "flutter_usabilla", binaryMessenger: registrar.messenger())
         let instance = SwiftFlutterUsabillaPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
+        let eventChannel = FlutterEventChannel(name: "flutter_usabilla_events", binaryMessenger: registrar.messenger())
+        eventChannel.setStreamHandler(instance)
     }
 
+    public func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
+        self.eventSink = events
+        return nil
+    }
+    
+    public func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        eventSink = nil
+        return nil
+    }
+    
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
         case "initialize":
@@ -208,7 +220,10 @@ extension SwiftFlutterUsabillaPlugin: UsabillaDelegate {
         let dictionary: Dictionary = ["error": error.description]
         rnResults.append(dictionary)
         formNavigationController = nil
-        ubFormResult!(rnResults)
+        if (ubFormResult != nil) {
+            ubFormResult!(ubResult)
+            return
+        }
     }
 
     public func formDidClose(formID: String, withFeedbackResults results: [FeedbackResult], isRedirectToAppStoreEnabled: Bool) {
@@ -219,14 +234,22 @@ extension SwiftFlutterUsabillaPlugin: UsabillaDelegate {
         }
         formNavigationController = nil
         let ubResult: [String : Any] = ["formId": formID, "results": ubResults, "isRedirectToAppStoreEnabled": isRedirectToAppStoreEnabled]
-        ubFormResult!(ubResult)
+        if (ubFormResult != nil) {
+            ubFormResult!(ubResult)
+            return
+        }
     }
 
     public func campaignDidClose(withFeedbackResult result: FeedbackResult, isRedirectToAppStoreEnabled: Bool) {
         let response: [String : Any] = ["rating": result.rating ?? 0, "abandonedPageIndex": result.abandonedPageIndex ?? 0, "sent": result.sent] as [String : Any]
         formNavigationController = nil
         let ubResult: [String : Any] = ["result": response, "isRedirectToAppStoreEnabled": isRedirectToAppStoreEnabled]
-        ubCampaignResult!(ubResult)
+        if (ubCampaignResult != nil) {
+            ubCampaignResult!(ubResult)
+            return
+        }
+        guard let eventSink = eventSink else { return }
+        eventSink(ubResult)
     }
 }
 
