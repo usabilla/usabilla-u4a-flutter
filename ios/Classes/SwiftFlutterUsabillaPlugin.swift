@@ -216,12 +216,12 @@ extension SwiftFlutterUsabillaPlugin: UsabillaDelegate {
     }
 
     public func formDidFailLoading(error: UBError) {
-        var rnResults: [[String : Any]] = []
+        var ubResults: [[String : Any]] = []
         let dictionary: Dictionary = ["error": error.description]
-        rnResults.append(dictionary)
+        ubResults.append(dictionary)
         formNavigationController = nil
         if (ubFormResult != nil) {
-            ubFormResult!(ubResult)
+            ubFormResult!(ubResults)
             return
         }
     }
