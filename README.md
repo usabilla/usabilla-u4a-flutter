@@ -161,7 +161,7 @@ For more on how to use custom variables, have a look at [Custom Variables](#cust
 
 ### Standard Events
 
-From **`v2.2.0`** onwards we are introducing a new feature **Standard Events**.
+From **`v2.2.1`** onwards we are introducing a new feature **Standard Events**.
 
 **Note : Now with Standard Events you can show campaigns in your application(Host application embedded with GetFeedback Digital/ Usabilla SDK) without adding any extra lines of code. You just have to create Standard Campaigns(Campaigns with Default/System Events) with your `User-Account` at `GetFeedback`.**
 

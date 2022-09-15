@@ -1,3 +1,7 @@
+## v2.2.1
+#### Fix
+- Rename breaking variable
+
 ## v2.2.0
 #### Update
 - Added Standard Events
