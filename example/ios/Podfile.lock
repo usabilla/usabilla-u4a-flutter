@@ -1,0 +1,29 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_usabilla (0.0.1):
+    - Flutter
+    - Usabilla (~> 6.5)
+  - Usabilla (6.12.3)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_usabilla (from `.symlinks/plugins/flutter_usabilla/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Usabilla
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_usabilla:
+    :path: ".symlinks/plugins/flutter_usabilla/ios"
+
+SPEC CHECKSUMS:
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  flutter_usabilla: 6346dc2e3a49cb924993dcf01a1d8c0cc9ac8d61
+  Usabilla: 6947d9553c756e4ae4a90fe7f29d1f97b0e95572
+
+PODFILE CHECKSUM: ffd7293eb7d5907b54a367fd400872baeef513a5
+
+COCOAPODS: 1.11.3
