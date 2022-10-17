@@ -149,6 +149,7 @@ public class SwiftFlutterUsabillaPlugin: NSObject, FlutterPlugin, FlutterStreamH
             return
         }
         Usabilla.customVariables = variables
+        result(nil)
     }
 
     private func getDefaultDataMasks(result: @escaping FlutterResult) {
