@@ -1,3 +1,7 @@
+## v2.2.2
+#### Fix
+- Custom variable callback
+
 ## v2.2.1
 #### Fix
 - Rename breaking variable
