@@ -94,6 +94,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     super.initState();
     initialize();
     setCustomVariable();
+    FlutterUsabilla.setDebugEnabled(true);
   }
 
   /// Initialize SDK
@@ -101,6 +102,7 @@ class _HomeWidgetState extends State<HomeWidget> {
     print('init started');
     try {
       await FlutterUsabilla.initialize(ubConfig.appId);
+      standardEventsData();
     } on PlatformException {
       print('Failed to initialize.');
     }
@@ -135,6 +137,24 @@ class _HomeWidgetState extends State<HomeWidget> {
         _validate = true;
       });
     }
+  }
+
+  Future<void> standardEventsData() async {
+    Stream stream;
+    try {
+      stream = await FlutterUsabilla.standardEventsData();
+      stream.listen(_onData, onError: _onErrorData);
+    } on PlatformException {
+      print('Failed to get standardEventsData.');
+    }
+  }
+  
+  static void _onData(event) {
+    print('response : $event');
+  }
+
+  static void _onErrorData(error) {
+    print('error: $error');
   }
 
   /// Reset Active form / Campaign
