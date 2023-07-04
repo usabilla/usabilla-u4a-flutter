@@ -11,7 +11,7 @@ import android.view.View
 import androidx.annotation.NonNull
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.lifecycle.liveData
 import com.usabilla.sdk.ubform.UbConstants
 import com.usabilla.sdk.ubform.UbConstants.INTENT_CLOSE_CAMPAIGN
 import com.usabilla.sdk.ubform.UbConstants.INTENT_CLOSE_FORM
@@ -28,6 +28,11 @@ import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.view.FlutterView
 import io.flutter.view.TextureRegistry
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.util.ArrayList
 
 class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, EventChannel.StreamHandler {
@@ -52,30 +57,31 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, E
     private var ubCampaignResult: Result? = null
     private var eventSink:EventChannel.EventSink? = null
 
-    private val closingFormReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val res: Map<String, Any> = getResult(intent, FeedbackResult.INTENT_FEEDBACK_RESULT)
-            (activity as? FragmentActivity)?.let {
-                val supportFragmentManager: FragmentManager = it.supportFragmentManager
-                supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)?.let { fragment ->
-                    supportFragmentManager.beginTransaction().remove(fragment).commit()
+    private val uiScope = CoroutineScope(Dispatchers.Main)
+    
+    private fun collectClosingFormSharedFlow() {
+        uiScope.launch {
+            Usabilla.sharedFlowClosingForm.collectLatest {
+                if (it.formType == com.usabilla.sdk.ubform.sdk.form.FormType.PASSIVE_FEEDBACK) {
+                    val res: Map<String, Any> = getResult(it.feedbackResult)
+                    (activity as? FragmentActivity)?.let {
+                        val supportFragmentManager: FragmentManager = it.supportFragmentManager
+                        supportFragmentManager.findFragmentByTag(FRAGMENT_TAG)?.let { fragment ->
+                            supportFragmentManager.beginTransaction().remove(fragment).commit()
+                        }
+                        ubFormResult?.success(res)
+                        ubFormResult = null
+                    }
+                } else if (it.formType == com.usabilla.sdk.ubform.sdk.form.FormType.CAMPAIGN) {
+                    val res: Map<String, Any> = getResult(it.feedbackResult)
+                    if (ubCampaignResult != null) {
+                        ubCampaignResult?.success(res)
+                        ubCampaignResult = null
+                    } else {
+                        eventSink?.let { it?.success(res) }
+                    }
                 }
-                ubFormResult?.success(res)
-                ubFormResult = null
             }
-        }
-    }
-
-    private val closingCampaignReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val res: Map<String, Any> =
-                getResult(intent, FeedbackResult.INTENT_FEEDBACK_RESULT_CAMPAIGN)
-            if (ubCampaignResult != null) {
-                ubCampaignResult?.success(res)
-                ubCampaignResult = null
-                return
-            }
-            eventSink?.let { it?.success(res) } ?: return
         }
     }
 
@@ -133,21 +139,14 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, E
     }
 
     private fun attachReceivers(context: Context) {
-        LocalBroadcastManager.getInstance(context).apply {
-            registerReceiver(closingFormReceiver, IntentFilter(INTENT_CLOSE_FORM))
-            registerReceiver(closingCampaignReceiver, IntentFilter(INTENT_CLOSE_CAMPAIGN))
-        }
+        collectClosingFormSharedFlow()
     }
 
     private fun detachReceivers(context: Context) {
-        LocalBroadcastManager.getInstance(context).apply {
-            unregisterReceiver(closingFormReceiver)
-            unregisterReceiver(closingCampaignReceiver)
-        }
+        uiScope.coroutineContext.cancelChildren()
     }
 
-    private fun getResult(intent: Intent, feedbackResultType: String): Map<String, Any> {
-        val res: FeedbackResult? = intent.getParcelableExtra(feedbackResultType)
+    private fun getResult(res: FeedbackResult?): Map<String, Any> {
         return mapOf<String, Any>(
             keyRating to (res?.rating ?: -1),
             keyAbandonedPageIndex to (res?.abandonedPageIndex ?: -1),
