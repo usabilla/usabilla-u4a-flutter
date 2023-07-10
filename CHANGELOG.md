@@ -1,3 +1,8 @@
+## v2.3.0
+#### Fix
+- Fix Integration with android sdk v8.+
+- Fix android sample app with standard events
+
 ## v2.2.2
 #### Fix
 - Custom variable callback

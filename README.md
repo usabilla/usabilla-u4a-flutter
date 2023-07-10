@@ -2,7 +2,7 @@
 
 Usabilla for Apps allows you to collect feedback from your users with great ease and flexibility.
 This Flutter bridge to the Native Usabilla SDK allows you to load passive feedback forms and submit results from a Flutter Apps.
-This release uses the Usabilla SDK for `iOS` v6.x.x and `Android` v7.x.x.
+This release uses the Usabilla SDK for `iOS` v6.x.x and `Android` v8.x.x.
 Please follow these steps.
 
 - [Usabilla for Apps - Flutter](#usabilla-for-apps---flutter)
@@ -97,13 +97,19 @@ class MainActivity: FlutterFragmentActivity() {
     }
 }
 ```
-2. Add `minSdkVersion`**:**`19` into `app's build.gradle`
+2. Add `minSdkVersion`**:**`21` into `app's build.gradle`
 ```
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 21
     }
 ```
-3. Add `Base Application Theme`**:**`AppTheme` into `Application's res/values/styles.xml`
+3. Add `compileSdkVersion`**:**`33` into `app's build.gradle`
+```
+    android {
+        compileSdkVersion 33
+    }
+```
+4. Add `Base Application Theme`**:**`AppTheme` into `Application's res/values/styles.xml`
 ```xml
   <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">

@@ -1,6 +1,6 @@
 name: flutter_usabilla
 description: Flutter Usabilla SDK is a flutter plugin/wrapper based on Usabilla native Android / iOS SDK, providing you to collect feedback from your users with great ease and flexibility.
-version: 2.2.2
+version: 2.3.0
 homepage: https://github.com/usabilla/usabilla-u4a-flutter
 
 environment:
