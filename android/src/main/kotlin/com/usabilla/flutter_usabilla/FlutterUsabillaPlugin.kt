@@ -13,8 +13,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.liveData
 import com.usabilla.sdk.ubform.UbConstants
-import com.usabilla.sdk.ubform.UbConstants.INTENT_CLOSE_CAMPAIGN
-import com.usabilla.sdk.ubform.UbConstants.INTENT_CLOSE_FORM
 import com.usabilla.sdk.ubform.Usabilla
 import com.usabilla.sdk.ubform.sdk.entity.FeedbackResult
 import io.flutter.embedding.engine.plugins.FlutterPlugin
