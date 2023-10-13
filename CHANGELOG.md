@@ -1,3 +1,7 @@
+## v2.3.1
+#### Fix
+- Remove unwanted imports for android
+
 ## v2.3.0
 #### Fix
 - Fix Integration with android sdk v8.+
