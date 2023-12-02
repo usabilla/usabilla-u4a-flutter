@@ -372,6 +372,8 @@ Custom variables are added as extra feedback data with every feedback item sent 
 
 **NOTE**: Custom variables can be used as targeting options, as long as the key,value are String type.
 
+
+<a id="support"></a>
 ## Support
 
-If you require help with the implementation, want to report an issue, or have a question please reach out to our Support Team via support@usabilla.com. When contacting our Support Team please make sure you include your Usabilla Account Name and the name of your Customer Success Manager.
+If you need help, want to report an issue, or have a question please reach out to the support team via our [Help Center](https://help.surveymonkey.com/en/contact/#getfeedback) or email [support@usabilla.com](mailto:support@usabilla.com)
