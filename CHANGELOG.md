@@ -1,3 +1,8 @@
+## v2.4.0
+#### Update
+- Add support for Gradle 8
+- Use JVM 1.8 for the Kotlin compiler
+
 ## v2.3.1
 #### Fix
 - Remove unwanted imports for android

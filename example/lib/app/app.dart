@@ -37,45 +37,41 @@ class HomeWidget extends StatefulWidget {
 Widget createButton(btnText, btnMethod) {
   return SizedBox(
     height: 48.0,
-    child: RaisedButton(
-      child: Text(
-        btnText,
-        style: TextStyle(
-          fontSize: 19.0,
-          fontFamily: 'MiloOT-Medi',
-        ),
-      ),
-      padding: const EdgeInsets.all(15.0),
-      textColor: Colors.white,
-      color: ubConst.colorUb,
-      onPressed: btnMethod,
-      textTheme: ButtonTextTheme.normal,
+    child: ElevatedButton(
+    style: ElevatedButton.styleFrom(
+    backgroundColor: ubConst.colorUb,
+    foregroundColor: Colors.white,
+    padding: const EdgeInsets.all(15.0),
+    textStyle: const TextStyle(
+      fontSize: 19.0,
+      fontFamily: 'MiloOT-Medi',
     ),
+  ),
+  onPressed: btnMethod,
+  child: Text(btnText),
+),
   );
 }
 
 Widget createEventButton(btnText, btnMethod) {
   return SizedBox(
     height: 48.0,
-    child: RaisedButton(
-      child: Text(
-        btnText,
-        style: TextStyle(
-          fontSize: 19.0,
-          fontFamily: 'MiloOT-Medi',
-        ),
-      ),
-      textColor: ubConst.colorUb,
-      color: Colors.white,
-      onPressed: btnMethod,
-      textTheme: ButtonTextTheme.normal,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(1.0),
-        side: BorderSide(
-          color: ubConst.colorUb,
-        ),
-      ),
+    child: ElevatedButton(
+  onPressed: btnMethod,
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.white,
+    foregroundColor: ubConst.colorUb,
+    textStyle: const TextStyle(
+      fontSize: 19.0,
+      fontFamily: 'MiloOT-Medi',
     ),
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(1.0),
+      side: BorderSide(color: ubConst.colorUb),
+    ),
+  ),
+  child: Text(btnText),
+),
   );
 }
 
