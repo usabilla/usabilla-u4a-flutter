@@ -1,15 +1,15 @@
 group 'com.usabilla.flutter_usabilla'
-version '2.3.1'
+version '2.4.0'
 
 buildscript {
-    ext.kotlin_version = '1.6.10'
+    ext.kotlin_version = '1.9.21'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath "com.android.tools.build:gradle:8.1.0"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -25,8 +25,16 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 33
+    if (project.android.hasProperty("namespace")) {
+        namespace 'com.usabilla.flutter_usabilla'
+    }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    compileSdkVersion 34
+    
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
