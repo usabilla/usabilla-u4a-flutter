@@ -15,10 +15,10 @@ A Flutter wrapper for Usabilla native iOS and Android SDKs.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.platform = :ios, '9.0'
+  s.platform = :ios, '12.0'
   s.dependency 'Usabilla', '~> 6.5'
   s.static_framework = true
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '12.0'
   s.swift_version = '4.2'
 
 end
