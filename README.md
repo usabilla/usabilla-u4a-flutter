@@ -59,7 +59,7 @@ import 'package:flutter_usabilla/flutter_usabilla.dart';
 
 To use the Usabilla Flutter Plugin on iOS devices, install **Usabilla SDK for iOS** 
 to make it an available resource for the Flutter library.
-This release uses the Usabilla SDK v6.4.7.
+This release uses the Usabilla SDK v6.14.0.
 
 1. Open your iOS project `Runner.xcodeproj` with **Xcode**.
 2. Add `Privacy - Camera Usage Description` and `Privacy - Photo Library Usage Description` into **Info.plist**.
@@ -69,11 +69,11 @@ This release uses the Usabilla SDK v6.4.7.
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>TEXT_FOR_END_USER</string>
 ```
-3. Set the `iOS Deployment Target` to 9.0 or above
-4. Uncomment or add `platform :ios, '9.0'` to the `podfile`.
+3. Set the `iOS Deployment Target` to 12.0 or above
+4. Uncomment or add `platform :ios, '12.0'` to the `podfile`.
 ``` Swift
 # Uncomment this line to define a global platform for your project
- platform :ios, '9.0'
+ platform :ios, '12.0'
 ```
 
 Run Flutter App.
@@ -116,12 +116,13 @@ class MainActivity: FlutterFragmentActivity() {
         <!-- Customize your theme here. -->
     </style>
 ```
-4. Add `Application Theme`**:**`AppTheme` into `Application's AndroidManifest.xml`
+5. Add `Application Theme`**:**`AppTheme` into `Application's AndroidManifest.xml`
 ```xml
   <application
         <activity
             android:theme="@style/AppTheme">
 ```
+**Note : Android sdk v8.+ has been migrated from localbroadcast to livedate or lifeccyle observer implementation**
 
 ## Campaigns
 
