@@ -3,18 +3,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_usabilla/flutter_usabilla.dart';
 
 void main() {
-  const MethodChannel channel = MethodChannel('flutter_usabilla');
-
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  const MethodChannel channel = MethodChannel('flutter_usabilla');
+
   setUp(() {
-    channel.setMockMethodCallHandler((MethodCall methodCall) async {
-      return '42';
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
+      if (methodCall.method == 'getPlatformVersion') {
+        return '42';
+      }
+      return null;
     });
   });
 
   tearDown(() {
-    channel.setMockMethodCallHandler(null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, null);
   });
 
   test('getPlatformVersion', () async {
