@@ -1,3 +1,7 @@
+## v2.5.0
+#### Fix
+- Remove deprecated flutter view android
+- Use FlutterRenderer for screenshot
 ## v2.4.0
 #### Update
 - Add support for Gradle 8
