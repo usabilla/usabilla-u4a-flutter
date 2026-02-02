@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Matrix
 import android.util.Log
 import android.view.View
 import androidx.annotation.NonNull
@@ -24,7 +26,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.view.FlutterView
 import io.flutter.view.TextureRegistry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +51,7 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, E
     private lateinit var channel: MethodChannel
     private lateinit var eventChannel: EventChannel
     private lateinit var registry: TextureRegistry
+    private lateinit var flutterRenderer: FlutterRenderer
     private lateinit var activity: Activity
 
     private var ubCampaignResult: Result? = null
@@ -85,6 +87,7 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, E
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         registry = flutterPluginBinding.textureRegistry
+        flutterRenderer = flutterPluginBinding.flutterEngine.renderer
         channel = MethodChannel(flutterPluginBinding.binaryMessenger, methodChannelName)
         channel.setMethodCallHandler(this)
 
@@ -188,15 +191,15 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, E
     }
 
     private fun takeScreenshot(view: View): Bitmap? {
-        var bitmap: Bitmap? = null
-        view.isDrawingCacheEnabled = true
-        if (registry.javaClass == FlutterView::class.java) {
-            bitmap = (registry as FlutterView).bitmap
-        } else if (registry.javaClass == FlutterRenderer::class.java) {
-            bitmap = (registry as FlutterRenderer).bitmap
+        val originalBitmap = flutterRenderer.bitmap
+        
+        // Flutter renderer returns a vertically flipped image, so we need to flip it back
+        return originalBitmap?.let {
+            val matrix = Matrix().apply {
+                postScale(1f, -1f, it.width / 2f, it.height / 2f)
+            }
+            Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, true)
         }
-        view.isDrawingCacheEnabled = false
-        return bitmap
     }
 
     private fun sendEvent(call: MethodCall, result: Result) {
