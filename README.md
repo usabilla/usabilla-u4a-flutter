@@ -2,7 +2,7 @@
 
 Usabilla for Apps allows you to collect feedback from your users with great ease and flexibility.
 This Flutter bridge to the Native Usabilla SDK allows you to load passive feedback forms and submit results from a Flutter Apps.
-This release uses the Usabilla SDK for `iOS` v6.x.x and `Android` v8.x.x.
+This release uses the Usabilla SDK for `iOS` v6.x.x and `Android` v9.x.x.
 Please follow these steps.
 
 - [Usabilla for Apps - Flutter](#usabilla-for-apps---flutter)
@@ -29,7 +29,9 @@ Please follow these steps.
 
 ## Requirements
 
-This version of the flutter native bridge / wrapper works with the latest release of `XCode 11`.
+This version of the flutter native bridge / wrapper works with the latest release of `Xcode`.
+
+**Version 2.6.0 and above requires Flutter `>=3.27.0`**
 
 ## Installation
 
@@ -97,16 +99,16 @@ class MainActivity: FlutterFragmentActivity() {
     }
 }
 ```
-2. Add `minSdkVersion`**:**`21` into `app's build.gradle`
+2. Add `minSdkVersion`**:**`24` into `app's build.gradle`
 ```
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 24
     }
 ```
-3. Add `compileSdkVersion`**:**`33` into `app's build.gradle`
+3. Add `compileSdkVersion`**:**`36` into `app's build.gradle`
 ```
     android {
-        compileSdkVersion 33
+        compileSdkVersion 36
     }
 ```
 4. Add `Base Application Theme`**:**`AppTheme` into `Application's res/values/styles.xml`
@@ -122,7 +124,9 @@ class MainActivity: FlutterFragmentActivity() {
         <activity
             android:theme="@style/AppTheme">
 ```
-**Note : Android sdk v8.+ has been migrated from localbroadcast to livedate or lifeccyle observer implementation**
+**Note : The Android SDK uses LiveData and Lifecycle Observer patterns for event handling (migrated from LocalBroadcast in earlier versions).**
+
+**Note : Android SDK 9.+ includes fixes for edge-to-edge related issues**
 
 ## Campaigns
 
