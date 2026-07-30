@@ -1,3 +1,7 @@
+## v2.6.0
+#### Update
+- Migrate Usabilla Android SDK to v9.
+- Update Flutter version requirement to `>=3.27.0`
 ## v2.5.0
 #### Fix
 - Remove deprecated flutter view android
