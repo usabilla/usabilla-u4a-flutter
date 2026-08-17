@@ -60,14 +60,14 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: MiloOT
+    - family: National
       fonts:
-      - asset: assets/fonts/MiloOT-Text.otf
-    - family: MiloOT-Bold
+      - asset: assets/fonts/regular.woff2
+    - family: National-Bold
       fonts:
-      - asset: assets/fonts/MiloOT-Bold.otf
-    - family: MiloOT-Medi
+      - asset: assets/fonts/bold.woff2
+    - family: National-Medi
       fonts:
-      - asset: assets/fonts/MiloOT-Medi.otf
+      - asset: assets/fonts/medium.woff2
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
