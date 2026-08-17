@@ -44,7 +44,7 @@ Widget createButton(btnText, btnMethod) {
     padding: const EdgeInsets.all(15.0),
     textStyle: const TextStyle(
       fontSize: 19.0,
-      fontFamily: 'MiloOT-Medi',
+      fontFamily: 'National-Medi',
     ),
   ),
   onPressed: btnMethod,
@@ -63,7 +63,7 @@ Widget createEventButton(btnText, btnMethod) {
     foregroundColor: ubConst.colorUb,
     textStyle: const TextStyle(
       fontSize: 19.0,
-      fontFamily: 'MiloOT-Medi',
+      fontFamily: 'National-Medi',
     ),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(1.0),
@@ -189,7 +189,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                   ubConst.headerString,
                   style: TextStyle(
                     fontSize: 55.0,
-                    fontFamily: 'MiloOT-Bold',
+                    fontFamily: 'National-Bold',
                     color: ubConst.colorUb,
                   ),
                   textAlign: TextAlign.left,
@@ -217,7 +217,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                         controller: textFieldController,
                         style: TextStyle(
                             fontSize: 19.0,
-                            fontFamily: 'MiloOT',
+                            fontFamily: 'National',
                             height: 1.0,
                             color: Colors.black),
                         decoration: InputDecoration(
