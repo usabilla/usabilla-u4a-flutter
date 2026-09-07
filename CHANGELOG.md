@@ -1,3 +1,6 @@
+## v2.6.1
+#### Update
+- Add National Fonts for sample app
 ## v2.6.0
 #### Update
 - Migrate Usabilla Android SDK to v9.
