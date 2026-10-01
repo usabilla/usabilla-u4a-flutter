@@ -2,7 +2,7 @@
 
 Usabilla for Apps allows you to collect feedback from your users with great ease and flexibility.
 This Flutter bridge to the Native Usabilla SDK allows you to load passive feedback forms and submit results from a Flutter Apps.
-This release uses the Usabilla SDK for `iOS` v6.x.x and `Android` v9.x.x.
+This release uses the Usabilla SDK for `iOS` v6.17.1 and `Android` v9.x.x.
 Please follow these steps.
 
 - [Usabilla for Apps - Flutter](#usabilla-for-apps---flutter)
@@ -29,9 +29,9 @@ Please follow these steps.
 
 ## Requirements
 
-This version of the flutter native bridge / wrapper works with the latest release of `Xcode`.
+This version of the Flutter native bridge supports CocoaPods and Swift Package Manager.
 
-**Version 2.6.0 and above requires Flutter `>=3.27.0`**
+**Version 2.6.0 and above requires Flutter `>=3.44.0`**
 
 ## Installation
 
@@ -59,20 +59,20 @@ import 'package:flutter_usabilla/flutter_usabilla.dart';
 
 ### iOS
 
-To use the Usabilla Flutter Plugin on iOS devices, install **Usabilla SDK for iOS** 
-to make it an available resource for the Flutter library.
-This release uses the Usabilla SDK v6.14.0.
+To use the Usabilla Flutter Plugin on iOS devices, Flutter resolves the Usabilla
+iOS SDK through Swift Package Manager. CocoaPods remains supported for projects
+that have Swift Package Manager disabled.
+This release uses the Usabilla SDK v6.17.1 through Swift Package Manager or CocoaPods.
 
-1. Open your iOS project `Runner.xcodeproj` with **Xcode**.
-2. Add `Privacy - Camera Usage Description` and `Privacy - Photo Library Usage Description` into **Info.plist**.
+1. Add `Privacy - Camera Usage Description` and `Privacy - Photo Library Usage Description` into **Info.plist**.
 ```
 	<key>NSCameraUsageDescription</key>
 	<string>TEXT_FOR_END_USER</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>TEXT_FOR_END_USER</string>
 ```
-3. Set the `iOS Deployment Target` to 12.0 or above
-4. Uncomment or add `platform :ios, '12.0'` to the `podfile`.
+2. Use iOS 12.0 or above. The Usabilla SDK requires Xcode 26 or later and Swift 4.0 or later.
+3. For CocoaPods projects, uncomment or add `platform :ios, '12.0'` to the `podfile`.
 ``` Swift
 # Uncomment this line to define a global platform for your project
  platform :ios, '12.0'
