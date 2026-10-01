@@ -13,12 +13,12 @@ A Flutter wrapper for Usabilla native iOS and Android SDKs.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'flutter_usabilla/Sources/flutter_usabilla/**/*.swift'
   s.dependency 'Flutter'
   s.platform = :ios, '12.0'
-  s.dependency 'Usabilla', '~> 6.5'
+  s.dependency 'Usabilla', '~> 6.17'
   s.static_framework = true
   s.ios.deployment_target = '12.0'
-  s.swift_version = '4.2'
+  s.swift_version = '5.9'
 
 end
