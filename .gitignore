@@ -209,3 +209,4 @@ fabric.properties
 ### AndroidStudio Patch ###
 
 !/gradle/wrapper/gradle-wrapper.jar
+ios/flutter_usabilla/.build/index-build/plugin-tools.yaml
