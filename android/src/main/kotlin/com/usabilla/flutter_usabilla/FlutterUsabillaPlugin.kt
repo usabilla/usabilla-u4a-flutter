@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Matrix
 import android.util.Log
 import android.view.View
 import androidx.annotation.NonNull
@@ -190,17 +189,7 @@ class FlutterUsabillaPlugin : FlutterPlugin, MethodCallHandler, ActivityAware, E
         Log.e(logTag, "$formId - Loading form not possible. Android activity is not of type FragmentActivity")
     }
 
-    private fun takeScreenshot(view: View): Bitmap? {
-        val originalBitmap = flutterRenderer.bitmap
-        
-        // Flutter renderer returns a vertically flipped image, so we need to flip it back
-        return originalBitmap?.let {
-            val matrix = Matrix().apply {
-                postScale(1f, -1f, it.width / 2f, it.height / 2f)
-            }
-            Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, true)
-        }
-    }
+    private fun takeScreenshot(view: View): Bitmap? = flutterRenderer.bitmap
 
     private fun sendEvent(call: MethodCall, result: Result) {
         val event = getArgumentFromCall<String?>(call, "event")
