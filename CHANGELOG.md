@@ -1,3 +1,7 @@
+## v2.7.0
+#### Update
+- Migrate Flutter to Built in Kotlin
+- Add Support for SPM
 ## v2.6.1
 #### Update
 - Add National Fonts for sample app
